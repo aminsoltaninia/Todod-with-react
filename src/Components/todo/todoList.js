@@ -1,11 +1,14 @@
-import React , {useState} from 'react';
-import  Todo from './todo'
+import React , {useState , useContext } from 'react';
+import  Todo from './todo';
+import TodosContext from '../../Context/tododCOntext'
+
 
 function TodoList(props) {
 
     const [statusDone , setDone ] = useState(false)
-    let { todos } = props;
-
+    const todosContext = useContext(TodosContext)
+    let { todos } = todosContext;
+    
     let filterTodos = todos.filter(item => item.done == statusDone)
     return (
         <>
@@ -26,12 +29,7 @@ function TodoList(props) {
             {
                 filterTodos.length === 0 ?
                     <p className="col-6 mb-3 ">there isnt any todo</p> :
-                    filterTodos.map(item => <Todo key={item.key}
-                        text={item}
-                        deleteTodo={props.deleteTodo}
-                        done={props.done}
-                        edit={props.edit}
-                    />)
+                    filterTodos.filter(item => item.done === statusDone).map(item => <Todo key={item.key} item ={item} />)
             }
         </>
     )

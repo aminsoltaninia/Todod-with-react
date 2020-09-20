@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState , useContext } from 'react';
+import TodosContext from '../../Context/tododCOntext';
 
 
 function Edit(props) {
 
 
     
-    const [text , setText] = useState(props.item)
-
+    const [text , setText] = useState(props.item.text)
     
+    const todosContext = useContext(TodosContext)
+     console.log("text in Edit : " , text )
     let inputHandler = (e) => setText(e.target.value)
 
     return (

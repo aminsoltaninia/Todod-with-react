@@ -1,16 +1,23 @@
 
-import React, { useState } from 'react';
-import Edit  from './editTodo'
+import React, { useState , useContext } from 'react';
+import Edit  from './editTodo';
+import TodosContext from '../../Context/tododCOntext';
 
 function Todo(props) {
 
-    // console.log(props)
+    
+    let{item} = props
+
     const [edit, setEdit] = useState(false)
-   
+    const todosContext = useContext(TodosContext)
+    
+
     let editHandler = (text) => {
-        props.edit(props.text.key,text);
+      
+        todosContext.edit(item.key,text);
         setEdit(false)
     }
+ 
 
     return (
         <>
@@ -20,17 +27,17 @@ function Todo(props) {
                     <div className="col-6 mb-3">
                         <div className="d-flex justify-content-between align-items-center border rounded p-3">
                             <div>
-                                {props.text.text}
+                                {item.text}
                             </div>
                             <div>
                                 <button type="button"
                                     className="btn btn-success btn-sm mr-1"
-                                    onClick={() => { props.done(props.text.key) }}
-                                >{props.text.done ? 'undone' : 'done'}</button>
+                                    onClick={() => { todosContext.done(item.key) }}
+                                >{item.done ? 'undone' : 'done'}</button>
                                 <button type="button" className="btn btn-info btn-sm mr-1" onClick={()=>{ setEdit(true)  }}>edit</button>
                                 <button type="button"
                                     className="btn btn-danger btn-sm "
-                                    onClick={() => { props.deleteTodo(props.text.key) }}
+                                    onClick={() => { todosContext.delete(item.key) }}
                                 >delete</button>
                             </div>
                         </div>
@@ -38,7 +45,7 @@ function Todo(props) {
 
                 )
                     :
-                    <Edit item={props.text.text} edit={editHandler} />
+                    <Edit item={item} edit={editHandler} />
             }
         </>
     )

@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, {useReducer , useState} from 'react';
 import Form from './todo/formAddTodod';
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -8,104 +8,73 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Header from './layout/Header'
 import TodoList from './todo/todoList';
 
+// imporr conetex
+import AuthContext from '../Context/authContext';
+import todosContext from '../Context/tododCOntext';
 
-class App extends Component {
+// import Reducer 
+import AppReducer from '../Reducers/appReducer';
 
-    state = {
 
-        todos: [],
-       
-    }
+function App(){
 
-    addTodo(text) {
-        this.setState(prevState => {
-            return {
-                todos: [
-                    ...prevState.todos,
-                    {
-                        key: Date.now(),
-                        done: false,
-                        text
-                    }
-                ],
 
+        const [state , dispatch ] = useReducer ( AppReducer , {
+
+                todos: [],
+                authenticated : false
             }
+        )
+   
 
-        })
-    }
-     
-    editTodo(key , text ){
-        let { todos } = this.state
-
-        let item = todos.find(item => item.key === key)
-
-        item.text = text;
-        let newTodods = todos.filter(item => item.key !== key)
-        this.setState({
-            todos: [
-                ...newTodods,
-                item
-            ]
-        })
-    }
-
-    deleteTodo(key) {
-        this.setState(prevState => {
-            return {
-                todos: prevState.todos.filter(item => item.key !== key)
-            }
-        })
-    }
-
-    toggleTodo(key) {
-        let { todos } = this.state
-
-        let item = todos.find(item => item.key === key)
-        item.done = !item.done;
-        
-        let newTodods = todos.filter(item => item.key !== key)
-        this.setState({
-            todos: [
-                ...newTodods,
-                item
-            ]
-        })
-    }
-
-    render() {
-
-        
-        
         return (
-            <div className="App">
-                <Header />
-                <main>
-                    <section className="jumbotron">
-                        <div className="container d-flex flex-column align-items-center">
-                            <h1 className="jumbotron-heading">Welcome</h1>
-                            <p className="lead text-muted">To get started, add some items to your list:</p>
-                            <div className="form-inline">
-                                <Form add={this.addTodo.bind(this)} />
+            <AuthContext.Provider value={{
+                 authenticated : this.state.authenticated,
+                 login : () =>{
+                     this.setState({ authenticated : true })
+                 },
+                 logout : ()=>{
+                      this.setState({ authenticated : false })
+                 }
+            }}> 
+                <todosContext.Provider
+                    value={
+                        {
+                            dispatch
+                            // todos: this.state.todos,
+                            // add: this.addTodo.bind(this),
+                            // done: this.toggleTodo.bind(this),
+                            // delete: this.deleteTodo.bind(this),
+                            // edit: this.editTodo.bind(this)
+                        }
+                    }>
+
+                    <div className="App">
+                        <Header />
+                        <main>
+                            <section className="jumbotron">
+                                <div className="container d-flex flex-column align-items-center">
+                                    <h1 className="jumbotron-heading">Welcome</h1>
+                                    <p className="lead text-muted">To get started, add some items to your list:</p>
+                                    <div className="form-inline">
+                                        <Form />
+                                    </div>
+                                </div>
+                            </section>
+                            <div className="todosList">
+                                <div className="container">
+                                    <div className="d-flex flex-column align-items-center ">
+                                        <TodoList />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </section>
-                    <div className="todosList">
-                        <div className="container">
-                            <div className="d-flex flex-column align-items-center ">
-                               <TodoList
-                                   todos={this.state.todos}
-                                   deleteTodo={this.deleteTodo.bind(this)}
-                                   done={this.toggleTodo.bind(this)}
-                                   edit={this.editTodo.bind(this)}
-                               />
-                            </div>
-                        </div>
+                        </main>
                     </div>
-                </main>
-            </div>
+                </todosContext.Provider>
+            </AuthContext.Provider>
         )
 
-    }
+    
 
 
 }

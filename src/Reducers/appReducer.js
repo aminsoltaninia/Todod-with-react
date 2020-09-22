@@ -3,21 +3,36 @@ function AppReducer(prevState, action ){
      
     switch (action.type) {
         case 'add_todo':
-            let { text } = action.payload;
-            return {
-                todos: [
-                           ...prevState.todos,
-                          {
-                                        key: Date.now(),
-                                        done: false,
-                                        text
-                                    }
-                                ]
-
+           return addTodo(prevState , action )
+           break;
+        case 'login_user':    
+           return {
+               ...prevState,
+            authenticated : true 
             }
+            break;
+        case 'logout_user':
+            return {
+                ...prevState,
+                authenticated : false
+             }
+             break;
+         case 'delete_todo':
+             let { key } = action.payload;
+             return {
+                 ...prevState , 
+                todos: prevState.todos.filter(item => item.key !== key)
+             }
+             break;
+         case 'toggle_todo': 
+             
+            return toggleTodo(prevState , action )  
             
-           
-    
+             break;
+
+        case 'edit_todo' : 
+           return editTodo(prevState , action)
+           break;
         default:
             return prevState ;
             
@@ -27,62 +42,62 @@ function AppReducer(prevState, action ){
 
 }
 
+ 
+let editTodo = (prevState, action)=> {
 
-// addTodo(text) {
+    
+    let { key , text } = action.payload
+    let item = prevState.todos.find(item => item.key === key)
 
-//     this.setState(prevState => {
-//         return {
-//             todos: [
-//                 ...prevState.todos,
-//                 {
-//                     key: Date.now(),
-//                     done: false,
-//                     text
-//                 }
-//             ],
+    item.text = text;
+    let newTodods = prevState.todos.filter(item => item.key !== key)
 
-//         }
+    return { 
+        ...prevState ,
+        todos: [
+            ...newTodods,
+            item
+        ]
+    }
+}
 
-//     })
-// }
 
-// editTodo(key, text) {
+let addTodo = (prevState , action )=>{
 
-//     let { todos } = this.state
+    let { text } = action.payload;
 
-//     let item = todos.find(item => item.key === key)
+    return {
+        ...prevState , // for authenticated
+        todos: [
+               ...prevState.todos,
+              {
+                      key: Date.now(),
+                      done: false,
+                         text
+               }
+       ]
 
-//     item.text = text;
-//     let newTodods = todos.filter(item => item.key !== key)
-//     this.setState({
-//         todos: [
-//             ...newTodods,
-//             item
-//         ]
-//     })
-// }
+    }
+}
 
-// deleteTodo(key) {
-//     this.setState(prevState => {
-//         return {
-//             todos: prevState.todos.filter(item => item.key !== key)
-//         }
-//     })
-// }
+let toggleTodo = (prevState , action)=>{
 
-// toggleTodo(key) {
-//     let { todos } = this.state
+    let { key } = action.payload;  
+    
+    let item = prevState.todos.find(item => item.key === key)
 
-//     let item = todos.find(item => item.key === key)
-//     item.done = !item.done;
+    item.done = !item.done;
 
-//     let newTodods = todos.filter(item => item.key !== key)
-//     this.setState({
-//         todos: [
-//             ...newTodods,
-//             item
-//         ]
-//     })
-// }
+    let newTodods =prevState.todos.filter(item => item.key !== key)
+
+    return {
+        ...prevState ,
+        todos: [
+            ...newTodods,
+            item
+        ]
+    }
+   
+}
 
 export default AppReducer;

@@ -28,24 +28,17 @@ function App(){
    
 
         return (
-            <AuthContext.Provider value={{
-                 authenticated : this.state.authenticated,
-                 login : () =>{
-                     this.setState({ authenticated : true })
-                 },
-                 logout : ()=>{
-                      this.setState({ authenticated : false })
-                 }
+            <AuthContext.Provider
+             value={{
+                 authenticated : state.authenticated,
+               
+                dispatch
             }}> 
                 <todosContext.Provider
                     value={
                         {
+                            todos : state.todos,
                             dispatch
-                            // todos: this.state.todos,
-                            // add: this.addTodo.bind(this),
-                            // done: this.toggleTodo.bind(this),
-                            // delete: this.deleteTodo.bind(this),
-                            // edit: this.editTodo.bind(this)
                         }
                     }>
 

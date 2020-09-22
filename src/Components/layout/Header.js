@@ -6,8 +6,8 @@ function Header() {
 
     const authContext = useContext(AuthContext)
 
-    let doLogin = () => authContext.login()
-    let doLogOut = () => authContext.logout()
+    let doLogin = () => authContext.dispatch({ type : 'login_user'})
+    let doLogOut = () => authContext.dispatch({ type : 'logout_user'})
 
     return (
         <header >
